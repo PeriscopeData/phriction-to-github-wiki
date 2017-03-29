@@ -105,20 +105,20 @@ class PhrictionDoc {
 		$this->fixUnorderedLists();
 		$this->fixHeadings();
 		$this->fixCodeBlocks();
-    $this->fixMissingIcons();
+		$this->fixMissingIcons();
 		$this->fixLinks();
 
 	}
 
-  private function fixMissingIcons() {
-    $lines = explode("\n", $this->content);
+	private function fixMissingIcons() {
+		$lines = explode("\n", $this->content);
 		foreach ($lines as $i => $line) {
 			// Reverse the line notation
 			$line = preg_replace('/\{(s|icon.*?)\}/', '', $line);
 			$lines[$i] = $line;
 		}
 		$this->content = join($lines, "\n");
-  }
+	}
 
 	private function fixNumberedLists() {
 		$lines = explode("\n", $this->content);
