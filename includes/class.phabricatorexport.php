@@ -98,16 +98,27 @@ class PhrictionDoc {
 	private function cleanUpContent() {
 
 		// Simple stuff right off the bat
-		$this->content = str_replace('http://phabricator.raventools.com/', '/', $this->content);
-		$this->content = str_replace('Phabricator', 'RavenWiki', $this->content);
+		$this->content = str_replace('http://some.phabricator.com/', '/', $this->content);
+		$this->content = str_replace('Phabricator', 'MyNewWiki', $this->content);
 
 		$this->fixNumberedLists();
 		$this->fixUnorderedLists();
 		$this->fixHeadings();
 		$this->fixCodeBlocks();
+    $this->fixMissingIcons();
 		$this->fixLinks();
 
 	}
+
+  private function fixMissingIcons() {
+    $lines = explode("\n", $this->content);
+		foreach ($lines as $i => $line) {
+			// Reverse the line notation
+			$line = preg_replace('/\{(s|icon.*?)\}/', '', $line);
+			$lines[$i] = $line;
+		}
+		$this->content = join($lines, "\n");
+  }
 
 	private function fixNumberedLists() {
 		$lines = explode("\n", $this->content);
@@ -134,7 +145,7 @@ class PhrictionDoc {
 	private function fixHeadings() {
 		$lines = explode("\n", $this->content);
 		foreach ($lines as $i => $line) {
-			$lines[$i] = preg_replace('/^[\=]+/', '#', $line, -1);	
+			$lines[$i] = preg_replace('/^[\=]+/', '#', $line, -1);
 		}
 		$this->content = join($lines, "\n");
 	}
@@ -185,7 +196,7 @@ class PhrictionDoc {
 			$matches[1] = basename($document->makeFilename());
 		}
 
-		return sprintf('[[%s|%s]]', $matches[2], $matches[1]);
+		return sprintf('[%s](%s)', $matches[2], $matches[1]);
 	}
 
 }
