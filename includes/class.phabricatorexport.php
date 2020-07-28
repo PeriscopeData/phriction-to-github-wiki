@@ -22,14 +22,16 @@ class PhabricatorExport	{
 
 		$return = array();
 		while($row = $rows->fetch()) {
-			$return[] = $this->getDocument($row['id']);
+			$return[] = $this->getDocument($row['phid']);
 		}
 		return $return;
 	}
 
 	public function getDocument($id) {
-		$query = sprintf('SELECT * FROM phriction_content WHERE documentID = %d ORDER BY version DESC LIMIT 1', $id);
+		$query = sprintf('SELECT * FROM phriction_content WHERE documentphid = \'%s\' ORDER BY version DESC LIMIT 1', $id);
 		$row = $this->db->query($query);
+		print($query);
+
 		$row->setFetchMode(PDO::FETCH_CLASS, 'PhrictionDoc');
 		return $row->fetch();
 	}
@@ -98,7 +100,7 @@ class PhrictionDoc {
 	private function cleanUpContent() {
 
 		// Simple stuff right off the bat
-		$this->content = str_replace('http://some.phabricator.com/', '/', $this->content);
+		$this->content = str_replace('https://phab.periscopedata.com/', '/', $this->content);
 		$this->content = str_replace('Phabricator', 'MyNewWiki', $this->content);
 
 		$this->fixNumberedLists();
